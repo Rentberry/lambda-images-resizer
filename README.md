@@ -1,11 +1,11 @@
 Images resizing with AWS Lambda
 ---
-Install
+## Install
 ```
 yarn add lambda-images-resizer
 ```
 
-Example of  index.js file of lambda function
+## Example of  index.js file of lambda function
 ```js
 let handler = require('lambda-images-resizer')({
   region: process.env.REGION,
@@ -21,3 +21,7 @@ exports.handler = function(event, context) {
         .catch((err) => context.fail(err))
 }
 ```
+
+## To-do list:
+- [ ] Resizing constraints
+- [ ] Signatures checking
