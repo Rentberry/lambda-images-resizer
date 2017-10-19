@@ -1,0 +1,29 @@
+{
+  "name": "lambda-images-resizer",
+  "version": "0.0.1",
+  "description": "Lambda images resizing handler",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rentberry/lambda-images-resizer.git"
+  },
+  "keywords": [
+    "lambda",
+    "imgages",
+    "processing",
+    "aws"
+  ],
+  "author": "support@rentberry.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rentberry/lambda-images-resizer/issues"
+  },
+  "homepage": "https://github.com/rentberry/lambda-images-resizer#readme",
+  "dependencies": {
+    "aws-sdk": "^2.135.0",
+    "sharp": "^0.18.4"
+  }
+}
