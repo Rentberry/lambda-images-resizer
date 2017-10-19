@@ -34,7 +34,7 @@ module.exports = function(options) {
       let match = key.match(/(\d+|auto)x(\d+|auto)\/(.*)/);
 
       if(!match) {
-        reject(Error('no match found'));
+        reject(new Error('no match found'));
       }
 
       let width = match[1];
