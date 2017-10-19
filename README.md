@@ -1,5 +1,9 @@
 Images resizing with AWS Lambda
 ---
+[![npm](https://img.shields.io/npm/v/lambda-images-resizer.svg)]()
+[![npm](https://img.shields.io/npm/l/lambda-images-resizer.svg)]()
+[![David](https://img.shields.io/david/rentberry/lambda-images-resizer.svg)]()
+
 ## Install
 ```
 yarn add lambda-images-resizer
