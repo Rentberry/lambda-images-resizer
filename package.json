@@ -1,6 +1,6 @@
 {
   "name": "lambda-images-resizer",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Lambda images resizing handler",
   "main": "src/index.js",
   "scripts": {

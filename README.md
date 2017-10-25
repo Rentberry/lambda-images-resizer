@@ -12,8 +12,8 @@ yarn add lambda-images-resizer
 ## Example of  index.js file of lambda function
 ```js
 const HttpError = require('lambda-images-resizer').HttpError
-const Handler = new require('lambda-images-resizer').Handler
-const handle = new Handler({
+const createProcessor = new require('lambda-images-resizer')
+const processor = createProcessor({
   region: process.env.REGION,
   bucket: process.env.BUCKET,
   cachePrefix: process.env.CACHE_PREFIX,
@@ -26,7 +26,7 @@ const handle = new Handler({
 })
 
 const handler = function(event, context) {
-  handle(event)
+  processor(event)
     .then((response) => {
       context.succeed(response)
     })
