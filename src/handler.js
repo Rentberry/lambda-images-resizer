@@ -1,7 +1,7 @@
 const AWS = require('aws-sdk');
 const Sharp = require('sharp');
 const HttpError = require('./httpError');
-const signature = require('./signature');
+const SignatureVerify = require('./signature');
 const mime = require('mime/lite');
 const supportedTypes = [
   "image/jpeg",
@@ -14,7 +14,7 @@ const supportedTypes = [
 
 module.exports = function(options) {
   const S3 = new AWS.S3({region: options.region});
-  const signVerify = signature(options.signatureSecret);
+  const signVerify = new SignatureVerify(options.signatureSecret);
 
   function download(bucket, key) {
     return new Promise(function (fulfill, reject) {
@@ -74,6 +74,10 @@ module.exports = function(options) {
       let height = parseInt(match[2], 10);
       let originalKey = match[3];
 
+      if (options.signatureVerification && (!signature || !signVerify(signature, match[1], match[2], match[3]))) {
+          return reject(new HttpError('Invalid signature'));
+      }
+
       if(isNaN(width) && isNaN(height)) {
         reject(new HttpError('Invalid dimensions'));
       }
@@ -85,9 +89,7 @@ module.exports = function(options) {
         return reject(new HttpError('Dimensions maximum constraint violation'));
       }
 
-      if (options.signatureVerification && (!signature || !signVerify(signature, width, height, originalKey))) {
-        return reject(new HttpError('Invalid signature'));
-      }
+
 
       let resizedBuffer;
       let mimeType = mime.getType(originalKey)
