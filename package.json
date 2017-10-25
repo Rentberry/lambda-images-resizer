@@ -1,8 +1,8 @@
 {
   "name": "lambda-images-resizer",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Lambda images resizing handler",
-  "main": "src/handler.js",
+  "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
