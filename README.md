@@ -11,21 +11,39 @@ yarn add lambda-images-resizer
 
 ## Example of  index.js file of lambda function
 ```js
-let handler = require('lambda-images-resizer')({
+const HttpError = require('lambda-images-resizer/httpError')
+const handle = require('lambda-images-resizer/handler')({
   region: process.env.REGION,
   bucket: process.env.BUCKET,
-  cachePrefix: process.env.CACHE_PREFIX
+  cachePrefix: process.env.CACHE_PREFIX,
+  signatureVerification: process.env.SIGNATURE_VERIFICATION === '1',
+  signatureSecret: process.env.SIGNATURE_SECRET,
+  cdnUrl: process.env.CDN_URL,
+  maxWidth: parseInt(process.env.MAX_WIDTH, 10) || 1920,
+  maxHeight: parseInt(process.env.MAX_HEIGHT, 10) || 1080,
+  logging: process.env.LOGGING === '1'
 })
 
-exports.handler = function(event, context) {
-    handler(event)
-        .then((response) => {
-            context.succeed(response)
+const handler = function(event, context) {
+  handle(event)
+    .then((response) => {
+      context.succeed(response)
+    })
+    .catch((err) => {
+      if (err instanceof HttpError) {
+        return context.succeed({
+          statusCode: err.statusCode,
+          body: err.message
         })
-        .catch((err) => context.fail(err))
+      }
+      return context.fail(err)
+    })
 }
+
+exports.handler = handler
+
 ```
 
 ## To-do list:
-- [ ] Resizing constraints
-- [ ] Signatures checking
+- [x] Resizing constraints
+- [x] Signatures checking
