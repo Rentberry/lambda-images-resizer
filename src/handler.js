@@ -29,7 +29,6 @@ module.exports = function(options) {
     return new Promise(function (fulfill, reject) {
       Sharp(data.Body)
         .resize(width, height)
-        .max()
         .toFormat(format)
         .toBuffer(function(err, outputBuffer) {
           if (err) reject(err)
