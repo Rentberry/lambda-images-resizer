@@ -29,6 +29,7 @@ module.exports = function(options) {
     return new Promise(function (fulfill, reject) {
       Sharp(data.Body)
         .resize(width, height)
+        .withoutEnlargement()
         .toFormat(format)
         .toBuffer(function(err, outputBuffer) {
           if (err) reject(err)
@@ -60,13 +61,13 @@ module.exports = function(options) {
       key = splitted_key[1];
 
       if (!key) {
-        return reject(new HttpError('Unsupported image location'))
+        return reject(new HttpError('Unsupported image location', 421))
       }
 
       let match = key.match(/(\d+|auto)x(\d+|auto)\/(.*)/);
 
       if(!match) {
-        return reject(new HttpError('Malformed route'));
+        return reject(new HttpError('Malformed route', 406));
       }
 
       let width = parseInt(match[1], 10);
@@ -74,18 +75,18 @@ module.exports = function(options) {
       let originalKey = match[3];
 
       if (options.signatureVerification && (!signature || !signVerify(signature, match[1], match[2], match[3]))) {
-          return reject(new HttpError('Invalid signature'));
+          return reject(new HttpError('Invalid signature', 403));
       }
 
       if(isNaN(width) && isNaN(height)) {
-        reject(new HttpError('Invalid dimensions'));
+        reject(new HttpError('Invalid dimensions', 400));
       }
 
       if(isNaN(width)) width = null;
       if(isNaN(height)) height = null;
 
       if (width > options.maxWidth || height > options.maxHeight) {
-        return reject(new HttpError('Dimensions maximum constraint violation'));
+        return reject(new HttpError('Dimensions maximum constraint violation', 403));
       }
 
 
@@ -94,7 +95,7 @@ module.exports = function(options) {
       let mimeType = mime.getType(originalKey)
 
       if (supportedTypes.indexOf(mimeType) === -1) {
-        return reject(new HttpError('Unsupported format'));
+        return reject(new HttpError('Unsupported format', 415));
       }
 
       return download(options.bucket, originalKey)
