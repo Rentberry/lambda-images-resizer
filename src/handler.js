@@ -104,9 +104,11 @@ module.exports = function(options) {
         .then((buffer) => { return upload(options.bucket, destKey, buffer, mimeType); })
         .then(() => {
           fulfill({
-            statusCode: 301,
+            isBase64Encoded: true,
+            statusCode: 200,
+            body: resizedBuffer.toString('base64'),
             headers: {
-              "Location": options.cdnUrl + '/' + destKey
+              'Content-Type': mimeType
             }
           })
         })
