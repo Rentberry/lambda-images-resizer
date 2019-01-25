@@ -28,13 +28,13 @@ module.exports = function(options) {
   function transform(data, width, height, format) {
     return new Promise(function (fulfill, reject) {
       Sharp(data.Body)
-        .resize(width, height)
-        .withoutEnlargement()
-        .toFormat(format)
-        .toBuffer(function(err, outputBuffer) {
-          if (err) reject(err)
-          fulfill(outputBuffer)
-        })
+          .resize(width, height)
+          .withoutEnlargement()
+          .toFormat(format)
+          .toBuffer(function(err, outputBuffer) {
+            if (err) reject(err)
+            fulfill(outputBuffer)
+          })
     })
   }
 
@@ -75,7 +75,7 @@ module.exports = function(options) {
       let originalKey = match[3];
 
       if (options.signatureVerification && (!signature || !signVerify(signature, match[1], match[2], match[3]))) {
-          return reject(new HttpError('Invalid signature', 403));
+        return reject(new HttpError('Invalid signature', 403));
       }
 
       if(isNaN(width) && isNaN(height)) {
@@ -89,9 +89,6 @@ module.exports = function(options) {
         return reject(new HttpError('Dimensions maximum constraint violation', 403));
       }
 
-
-
-      let resizedBuffer;
       let mimeType = mime.getType(originalKey)
 
       if (supportedTypes.indexOf(mimeType) === -1) {
@@ -99,20 +96,21 @@ module.exports = function(options) {
       }
 
       return download(options.bucket, originalKey)
-        .then((data) => { return transform(data, width, height, mime.getExtension(mimeType)); })
-        .then((buffer) => {resizedBuffer = buffer; return buffer;})
-        .then((buffer) => { return upload(options.bucket, destKey, buffer, mimeType); })
-        .then(() => {
-          fulfill({
-            isBase64Encoded: true,
-            statusCode: 200,
-            body: resizedBuffer.toString('base64'),
-            headers: {
-              'Content-Type': mimeType
-            }
+          .then((data) => { return transform(data, width, height, mime.getExtension(mimeType)); })
+          .then((buffer) => {
+            fulfill({
+              isBase64Encoded: true,
+              statusCode: 200,
+              body: buffer.toString('base64'),
+              headers: {
+                'Content-Type': mimeType
+              }
+            });
+
+            return buffer;
           })
-        })
-        .catch(err => reject(err))
+          .then((buffer) => { return upload(options.bucket, destKey, buffer, mimeType); })
+          .catch(err => reject(err))
     })
   }
 }
