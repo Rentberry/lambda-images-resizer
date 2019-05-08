@@ -28,8 +28,9 @@ module.exports = function(options) {
   function transform(data, width, height, format) {
     return new Promise(function (fulfill, reject) {
       Sharp(data.Body)
-          .resize(width, height)
-          .withoutEnlargement()
+          .resize(width, height, {
+            withoutEnlargement: true
+          })
           .toFormat(format)
           .toBuffer(function(err, outputBuffer) {
             if (err) reject(err)
