@@ -26,6 +26,10 @@ module.exports = function(options) {
   }
 
   function transform(data, width, height, format) {
+    if (format === 'gif') {
+      format = 'jpeg';
+    }
+
     return new Promise(function (fulfill, reject) {
       Sharp(data.Body)
           .resize(width, height, {
